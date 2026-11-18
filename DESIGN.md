@@ -27,7 +27,7 @@ Every assignment requirement mapped to where it is met (in this document and in 
 | P2 design challenge: error vs. acceptable variation, one example each | §D7.3, Screen S5 (Speak task accepts "साम"; Write task flags "साम") |
 | D1 Problem, 3 measurable outcomes, context of use | §D1 |
 | D2 Persona expanded from L8 | §D2 |
-| D3 Concept explanation, ≥5 tasks in ≥2 formats, model answers, feedback for correct + each misconception | §D3 (14 core tasks, 6 formats) |
+| D3 Concept explanation, ≥5 tasks in ≥2 formats, model answers, feedback for correct + each misconception | §D3 (21 core tasks — 7 per sound block — in 6 formats, plus harder, remediation and mid-check items) |
 | D4 ≥5 connected screens, inputs/outputs/transitions, C4 visible, ID on every screen | §D4 (9 screens + log viewer) |
 | D5 Two contrasting scenarios with screenshots | §D5 |
 | D6 AI spec: what, input (actual call), output, check, fallback | §D6 |
@@ -92,8 +92,10 @@ After 3–4 sessions of 10 minutes, the learner will be able to:
 ### D3.1 Structure of one session (fits C4)
 
 ```
-Diagnostic (3 Q) → Choose sounds → [ for each chosen sound block:  Concept → 6 tasks ] → Mid-check → Summary
+Diagnostic (3 Q) → Choose sounds → [ for each chosen sound block:  Concept → 4–7 tasks ] → Mid-check (after block 1) → Summary
 ```
+
+A returning learner skips the diagnostic: S3 recommends sounds from the earlier diagnostic and current mastery (with a "जाँच फिर से करो" / retake option). Words missed in the last session are reviewed first, as FILL items (spacing across sessions).
 
 Each **sound block** teaches one contrast only (Cognitive Load Theory). Tasks inside a block move up Bloom's levels: **recognise → recall a letter → produce (speak / spell) → analyse (find error) → explain (why)**.
 
@@ -192,7 +194,7 @@ The app classifies every written answer (§D6.2) and shows the matching feedback
 
 | Response type | Example | Feedback shown (Hindi) | English gloss | Next step |
 |---|---|---|---|---|
-| **Correct** | शाम | शाबाश, रवि! 🎉 **श**ाम में **श** ही आता है। | Well done Ravi! शाम has श. | Confidence +8, next task |
+| **Correct** | शाम | शाबाश, रवि! 🎉 **श**ाम में **श** ही आता है। | Well done Ravi! शाम has श. | Confidence +5, next task |
 | **Correct after hint/retry** | शाम (2nd try) | बहुत अच्छे! इस बार तुमने सही कर लिया। 💪 | Very good! You got it this time. | Confidence +4 |
 | **M1: स for श** | साम | तुम्हारा बोलना बिल्कुल ठीक है! 😊 पर लिखते समय यहाँ **श** लगता है: **श**ाम। चलो, एक बार और। | Your speaking is fine! But in writing this needs श. Try once more. | Retry with श/स highlighted |
 | **Over-correction: श for स** | शब | ध्यान दो! **स**ब में **स** ही आता है। हर स, श नहीं बनता: **स**ब, **स**ात, **स**मय। | Careful! सब keeps स. Not every स becomes श. | Retry |
@@ -233,7 +235,7 @@ The ID badge **"ET617 · 23B2509"** sits in the header of **every** screen, next
 
 | C4 requirement | Implementation (visible in the app) |
 |---|---|
-| One complete sequence fits in 10 min | Fixed plan: diagnostic ~1 min, choose ~0.5 min, concept ~1 min per block, 6 tasks × ~40 s per block, mid-check ~0.5 min, summary ~0.5 min. **1 block ≈ 6 min, 2 blocks ≈ 9.5 min.** If 3 blocks are chosen, each block is shortened to 4 tasks (MCQ, FILL, SPELL, WHY) so the total stays under 10 min. S3 shows "⏱ लगभग 9 मिनट" for the current choice. |
+| One complete sequence fits in 10 min | Fixed plan: diagnostic ~1 min, choose ~0.5 min, concept ~1 min per block, ~30 s per task, mid-check ~0.5 min, summary ~0.5 min. The number of tasks per block depends on how many blocks are chosen: **1 block → all 7 tasks (≈ 6 min); 2 blocks → 5 each (MCQ, FILL, SPEAK, SPELL, WHY; ≈ 9 min); 3 blocks → 4 each (MCQ, FILL, SPELL, WHY; ≈ 10 min).** S3 shows the estimate for the current choice, e.g. "⏱ लगभग 6 मिनट (1 हिस्सा)". |
 | Visible time | Header countdown **"⏱ 7:42 बचे"** (left) on every screen; turns amber at 2:00. The timer pauses when the tab is hidden (phone taken away). |
 | Graceful end | At 9:30 the current task finishes, then the app goes to S8: "आज के लिए बहुत अच्छा! बाकी कल करेंगे।" Unfinished tasks are saved for the next session. |
 | Stop and resume | State is saved to `localStorage` **after every answer** and on `visibilitychange`. Reopening shows the resume card on S1 with the exact block and question number. Saved sessions older than 24 h are offered as a fresh start instead. |
@@ -271,7 +273,8 @@ Events logged: `app_open`, `screen_view`, `diag_answer`, `topic_toggle` (with `r
 | | |
 |---|---|
 | **Stack** | Static HTML + CSS + vanilla JavaScript. No framework, no build step, no backend. |
-| **Files** | `index.html`, `styles.css`, `app.js` (screens, adaptivity, logging), `data.js` (word bank, variants, feedback text), `DESIGN.md`, `README.md`, `LICENSE` |
+| **Files** | `index.html`, `styles.css`, `app.js` (screens, adaptivity, logging), `nlp.js` (classifier, speech judge, akshara segmentation), `data.js` (word bank, variants, feedback text), `tests/` (classifier tests + end-to-end scenario tests), `tools/screenshots.js` (captures the D5 screenshots in a real browser), `DESIGN.md`, `README.md`, `LICENSE` |
+| **Demo mode** | `?demo=1` adds a small "simulate transcript" box under the 🎤 button so evaluators without a microphone can test the speech path (e.g. type "साम"). It is clearly labelled and off by default. |
 | **Size** | Target < 100 KB total; no images or video (emoji are used for pictures). Works offline after the first load, except speech recognition. |
 | **Storage** | `localStorage`: `et617_23b2509_profile`, `et617_23b2509_session`, `et617_23b2509_log` |
 | **Hosting** | Vercel, static deployment from GitHub: `et617-23b2509.vercel.app` |
@@ -281,7 +284,7 @@ Events logged: `app_open`, `screen_view`, `diag_answer`, `topic_toggle` (with `r
 
 ## D5. Two contrasting learner scenarios
 
-Both scenarios are run on the live app. Screenshots are stored in `screenshots/`.
+Both scenarios are run on the live app. Screenshots are stored in `screenshots/`; they are captured with `node tools/screenshots.js https://et617-23b2509.vercel.app screenshots` (phone viewport 390 × 844, `?demo=1` for the speech step). The same two paths are also checked automatically by `tests/smoke.test.js`.
 
 ### Scenario A — Learner who responds correctly ("Aman", Class 6)
 
@@ -304,7 +307,7 @@ Both scenarios are run on the live app. Screenshots are stored in `screenshots/`
 | B4 | S3 SPEAK **शाम**: says "**साम**" | **Accepted as a dialect variant**: "'साम' — यह तुम्हारे इलाके का उच्चारण है, बिल्कुल ठीक है।" (**variation example**) | `screenshots/b4-speech-variant.png` |
 | B5 | S5 SPELL **शेर**: builds **सेर** | Second M1 error → **remediation triggered**: Mitthu's mini-lesson + 2 easy items (🔊 शाम/साम, _ेर) inserted; level stays 1 (**error example**) | `screenshots/b5-remediation.png` |
 | B6 | S7 WHY: picks (c) "श और स एक ही हैं" | M1 conceptual feedback; correct reason shown | `screenshots/b6-why-feedback.png` |
-| B7 | Summary | Score lower; श/स mastery 50%; "कल फिर अभ्यास करेंगे: शहर, शेर"; streak 🔥1; confidence meter shown | `screenshots/b7-summary.png` |
+| B7 | Summary | Score 6/9 (A: 9/9); श/स mastery 60%, not yet "सीख लिया"; "कल फिर अभ्यास करेंगे: शहर, शेर"; streak 🔥1; confidence meter shown | `screenshots/b7-summary.png` |
 
 **How the system responds differently:** different recommendation on S3, different starting level, misconception-specific feedback instead of praise, an inserted remediation mini-lesson and extra items, a different summary, and a review list for the next session.
 
@@ -384,7 +387,7 @@ function classify(target, response) {
 
 | | |
 |---|---|
-| **Check** | Deterministic: the same answer always gets the same label. Before release, the classifier is run on every word in the bank with its common misspellings (e.g. शाम→साम = M1, सब→शब = OVER, सड़क→सडक = M2_D, सड़क→सरक = M2_R, डर→ड़र = POS, शाम→शम = OTHER). All must return the expected label. |
+| **Check** | Deterministic: the same answer always gets the same label. Before release, the classifier is run on every word in the bank with its common misspellings (e.g. शाम→साम = M1, सब→शब = OVER, सड़क→सडक = M2_D, सड़क→सरक = M2_R, डर→ड़र = POS, शाम→शम = OTHER). All must return the expected label: `tests/nlp.test.js` runs 30 such checks (classifier, speech judge, segmentation, and precomposed ड़ U+095C vs ड + nukta). |
 | **Fallback** | `OTHER` gets neutral feedback that shows the correct word with the target letter highlighted, and the item is re-queued. All `OTHER` cases are logged, so a teacher can review them and new rules can be added. |
 
 ### D6.3 Text-to-speech (supporting feature)
@@ -453,12 +456,12 @@ The same feedback also teaches the rule itself ("बोलना और लि�
 | Source | Rule |
 |---|---|
 | **Profile (diagnostic + self-selection)** | A sound answered wrong in the diagnostic is recommended (⭐). Learner can add or remove blocks. A block whose diagnostic item was correct starts at **Level 2**; otherwise **Level 1**. |
-| **Performance** | 3 correct first attempts in a row → level +1 (max 3, harder words). 2 errors of the same misconception within the last 3 items → remediation mini-lesson + 2 easy items, level −1 (min 1). Mid-check < 2/2 → 2 remediation items before the next block. |
+| **Performance** | 3 correct first attempts in a row → level +1 (max 3, harder words). 2 errors of the same misconception (M1, over-correction, or any ड़/ढ़ error) within the current block → remediation mini-lesson + 2 easy items, level −1 (min 1); at most 2 remediations per block. A second wrong attempt shows the answer and re-queues the item 2 tasks later. Mid-check < 2/2 → 2 remediation items before the next block. |
 | **Interaction** | ≥ 2 hints in the last 3 items → hold level and insert a FILL scaffold before the next SPELL. Latency > 20 s → hint button pulses. Speech failed twice → switch that learner's SPEAK tasks to tiles for the rest of the session. |
 | **Time (C4)** | 3 blocks chosen → 4 tasks per block. At 9:30 → finish the current task and go to the summary. |
 
-**Mastery** per sound = % correct first attempts over the last 5 graded items. ≥ 80% → "सीख लिया ✓".
-**Confidence meter:** starts at 50; +8 correct first try, +4 correct after retry or hint, −3 wrong; kept between 0 and 100. It falls gently so it doesn't punish an anxious learner.
+**Mastery** per sound = % correct first attempts over the last 5 graded items (easy remediation items are excluded so they cannot inflate it). ≥ 80% with at least 3 attempts → "सीख लिया ✓".
+**Confidence meter:** starts at 50; +5 correct first try, +3 correct after retry or hint, −2 wrong; kept between 0 and 100. It falls gently so it doesn't punish an anxious learner.
 **Streak:** consecutive calendar days with at least one completed task.
 
 ### D7.6 How C4 and the learner context (L8) shaped the design
@@ -469,7 +472,7 @@ The same feedback also teaches the rule itself ("बोलना और लि�
 
 ### D7.7 Build process
 
-The app was built with a **Lean / Kanban** approach suited to a solo, time-boxed build: a working thin slice first (one block, three formats, deployed), then features pulled from a single prioritised list (adaptivity, logging, profile, remaining blocks). Each change was deployed and checked on a phone-width screen before the next item.
+The app was built with a **Lean / Kanban** approach suited to a solo, time-boxed build: a working thin slice first (one block, three formats, deployed), then features pulled from a single prioritised list (adaptivity, logging, profile, remaining blocks). Each slice was committed to GitHub, tested (`npm test`: classifier tests + both D5 scenarios end-to-end), and checked as phone-width screenshots before the next item. Issues found this way and fixed: header overflow at 390 px, matras detaching from highlighted letters (dotted circle), and remediation items inflating the mastery score.
 
 ---
 
