@@ -1,4 +1,4 @@
-# DESIGN.md — बोलो-लिखो (Bolo-Likho)
+# DESIGN.md — Bhojpurify (भोजपुरीफ़ाई)
 
 > **"बोलो अपने अंदाज़ में, लिखो किताब के अंदाज़ में।"**
 > *Speak your own way, write the book's way.*
