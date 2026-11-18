@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Bhojpurify (ET617 · 23B2509): Hindi श/स and ड़ spelling practice for Bhojpuri-speaking children, in 10-minute sessions.">
+  <title>Bhojpurify · 23B2509</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <button class="brand" id="brandBtn" type="button" aria-label="Home">
+      <span class="brand-icon" aria-hidden="true">🦜</span>
+      <span class="brand-name">Bhojpurify</span>
+    </button>
+    <span class="id-badge" title="Identity token">ET617 · 23B2509</span>
+    <span class="timer" id="timer" aria-live="off">⏱ 10:00</span>
+    <button class="icon-btn" id="langBtn" type="button" aria-label="Toggle English">EN</button>
+    <button class="icon-btn" id="profileBtn" type="button" aria-label="Profile">👤</button>
+  </header>
+
+  <main id="app" class="app" aria-live="polite"></main>
+
+  <div id="sheet" class="sheet" hidden></div>
+  <div id="toast" class="toast" hidden></div>
+
+  <footer class="foot">
+    Bhojpurify · ET617 · <b>23B2509</b> · CC BY 4.0
+  </footer>
+
+  <noscript>Bhojpurify needs JavaScript. / इस ऐप के लिए JavaScript चालू करें।</noscript>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
