@@ -51,7 +51,9 @@ function log(ev, data) {
 
 /* ================= Helpers ================= */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-function bi(hi, en, inline) { return `<span class="hi">${hi}</span>` + (en ? `<span class="en${inline ? ' inline' : ''}">${en}</span>` : ''); }
+/** Keep matras with their consonant: "<span>श</span>ाम" → "<span>शा</span>म" (otherwise browsers draw a dotted circle). */
+function joinMarks(html) { return String(html).replace(/<\/(span|b)>([ऀ-ःऺ-ॏ॑-ॗ]+)/g, '$2</$1>'); }
+function bi(hi, en, inline) { return `<span class="hi">${joinMarks(hi)}</span>` + (en ? `<span class="en${inline ? ' inline' : ''}">${joinMarks(en)}</span>` : ''); }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function uid() { return Math.random().toString(36).slice(2, 8); }
 function mmss(sec) { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
@@ -188,6 +190,7 @@ function go(screen) {
   currentScreen = screen;
   closeSheet();
   clearTimeout(pulseTimer);
+  if (screen === 'summary' || screen === 'profile' || screen === 'log') $toast.hidden = true;
   ui = {};
   window.scrollTo(0, 0);
   render();
@@ -709,7 +712,7 @@ function handleAnswer(item, label, ctx) {
   const latency = Date.now() - (session.itemStart || Date.now());
 
   if (first) recordFirst(item, correct, label, hinted, isMid);
-  else if (correct) profile.confidence = clamp(profile.confidence + 4, 0, 100);
+  else if (correct) profile.confidence = clamp(profile.confidence + 3, 0, 100);
 
   log('answer', { block: item.block, item: item.id, format: item.f, input: ctx.input, result: label, correct,
     attempt: session.attempt, latencyMs: latency, hints: session.hint, level: session.level[item.block] || null,
@@ -748,9 +751,10 @@ function handleAnswer(item, label, ctx) {
 
 function recordFirst(item, correct, label, hinted, isMid) {
   const b = item.block;
-  profile.mastery[b] = (profile.mastery[b] || []).concat(correct ? 1 : 0).slice(-5);
+  // mastery = last 5 graded first attempts; easy remediation items are excluded so they don't inflate it
+  if (!item.remedial) profile.mastery[b] = (profile.mastery[b] || []).concat(correct ? 1 : 0).slice(-5);
   session.results.push({ id: item.id, block: b, word: item.word, f: item.f, correct, label, hinted, mid: isMid });
-  profile.confidence = clamp(profile.confidence + (correct ? (hinted ? 4 : 8) : -3), 0, 100);
+  profile.confidence = clamp(profile.confidence + (correct ? (hinted ? 3 : 5) : -2), 0, 100);
   markToday();
   if (isMid) { if (correct) session.mid.ok++; return; }
   adapt(item, correct, label, hinted);
