@@ -1,0 +1,11 @@
+{
+  "name": "bhojpurify-et617-23b2509",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bhojpurify (ET617 · 23B2509): Hindi श/स and ड़ spelling practice for Bhojpuri-speaking children in 10-minute sessions.",
+  "license": "CC-BY-4.0",
+  "scripts": {
+    "test": "node tests/nlp.test.js",
+    "start": "npx --yes serve@14.2.4 -l 5173 ."
+  }
+}
