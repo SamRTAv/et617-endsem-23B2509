@@ -317,4 +317,8 @@ input[type="text"]:focus, select:focus, button:focus-visible { outline: 3px soli
 .stat .num { font-size: 1.6rem; font-weight: 800; }
 .stat .lbl { font-size: .85rem; color: var(--muted); }
 
+.app.locked { pointer-events: none; }
+.no-tts .tts { display: none !important; }
+.back { background: none; border: 0; color: var(--brand); font-weight: 700; padding: 6px 0; cursor: pointer; }
+
 .demo { border: 2px dashed #94a3b8; border-radius: 12px; padding: 8px 10px; font-size: .85rem; background: #f8fafc; }
